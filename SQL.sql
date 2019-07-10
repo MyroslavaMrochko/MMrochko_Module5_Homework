@@ -214,29 +214,3 @@ except select supplierid, detailid, productid from supplies where productid in (
 
 
 
-
-
-
-
-DECLARE @dtStartDate datetime
-DECLARE @dtEndDate datetime
-SET @dtStartDate = '2015-05-01'
-SET @dtEndDate = '2015-05-31'
-
-SELECT
-  CASE DATEPART(weekday, T.DateVal)
-    WHEN 1 THEN 'Sunday'
-    WHEN 2 THEN 'Monday'
-    WHEN 3 THEN 'Tuesday'
-    WHEN 4 THEN 'Wednesday'
-    WHEN 5 THEN 'Thursday'
-    WHEN 6 THEN 'Friday'
-    WHEN 7 THEN 'Saturday'
-
-
-
-
-
-
-
-
