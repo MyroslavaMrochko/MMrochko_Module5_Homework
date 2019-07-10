@@ -104,8 +104,26 @@ SELECT
 FROM cte
 
 
-5
-
+-5
+declare @date as date = dateadd(mm,-1,getdate())
+;with cte as (select dateadd(dd,1,eomonth(dateadd(mm,-1,@date))) firstofmonth, eomonth(@date) endofmonth), cte1 as (select dateadd(dd, -1 * (case datepart(weekday, firstofmonth) when 1 then 6
+else datepart(weekday, firstofmonth) - 2 end), firstofmonth) previousmonday,
+firstofmonth, endofmonth, case when datepart(dw,endofmonth) = 1 then endofmonth
+else dateadd(dd, 8 - datepart(dw,endofmonth), endofmonth)  end as lastsunday from cte), cte2 as (
+select 1 cnt, previousmonday as calendarday, lastsunday from cte1
+union all
+select cnt+1, dateadd(dd, 1, calendarday) as calendarday, lastsunday from cte2 where dateadd(dd, 1, calendarday) <= lastsunday), 
+calendar as (select cnt, ((cnt-1)/7)+1 weeknumber, calendarday, datename(dw,calendarday) nameofday,
+ case when (cnt % 7) = 1 and month(calendarday) = month(@date) then cast(calendarday as varchar) else '' end as Monday,
+ case when (cnt % 7) = 2 and month(calendarday) = month(@date) then cast(calendarday as varchar) else '' end as Tuesday,
+ case when (cnt % 7) = 3 and month(calendarday) = month(@date) then cast(calendarday as varchar) else '' end as Wednesday,
+ case when (cnt % 7) = 4 and month(calendarday) = month(@date) then cast(calendarday as varchar) else '' end as Thursday,
+ case when (cnt % 7) = 5 and month(calendarday) = month(@date) then cast(calendarday as varchar) else '' end as Friday,
+ case when (cnt % 7) = 6 and month(calendarday) = month(@date) then cast(calendarday as varchar) else '' end as Saturday,
+ case when (cnt % 7) = 0 and month(calendarday) = month(@date) then cast(calendarday as varchar) else '' end as Sunday from cte2)
+select
+ max(Monday) Monday,max(Tuesday) Tuesday,max(Wednesday) Wednesday,max(Thursday) Thursday,max(Friday) Friday,max(Saturday) Saturday,
+ max(Sunday) Sunday from calendar group by weeknumber;
 
 
 --1--
