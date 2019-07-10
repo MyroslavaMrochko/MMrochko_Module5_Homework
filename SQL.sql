@@ -57,15 +57,19 @@ INSERT INTO Supplies (supplierid, detailid, Productid, quantity) VALUES
 (5,5,4,400),
 (5,6,4,500);
 
-
+-a
+select rs.productid from (select s.productid, s.detailid from supplies s 
+where s.supplierid=3 ) rs group by rs.detailid, rs.productid;
+-b
+select supplierid from supplies where quantity > (select avg(quantity) from supplies where detailid=1)
 --c.
 select distinct detailid from supplies where productid in (select productid from products where city = 'London');
 --d.
 select supplierid, name from Suppliers where supplierid in (select supplierid from supplies where detailid in (select detailid from details where color = 'red'));
-e. Показати номери деталей, які використовуються принаймні в одному виробі, який поставляється постачальником 2
--select distinct(detailid) from supplies where productid in (select productid from supplies where supplierid=2)
-f.
-select product
+-e
+select productid from supplies where supplierid = 2 group by productid having count (detailid)>1
+-f
+select productid from supplies group by productid having avg(quantity) > (select Max(quantity) from supplies where productid=1)
 --g.
 select productid from products where productid not in (select distinct productid from supplies);
 
@@ -220,7 +224,7 @@ union
 select city from details
 --3.  
 select supplierid from suppliers except select supplierid from supplies where detailid in (select detailid from details where city = 'London');
-4.
+-4.
 select * from supplies inner join products on supplies.productid=products.productid where city ='London' or city ='Paris'
 intersect
 select * from supplies inner join products on supplies.productid=products.productid where city ='Paris' or city ='Rome'
