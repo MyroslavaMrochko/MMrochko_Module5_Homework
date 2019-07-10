@@ -202,10 +202,10 @@ union
 select city from details
 --3.  
 select supplierid from suppliers except select supplierid from supplies where detailid in (select detailid from details where city = 'London');
-4. Знайти різницю між множиною продуктів, які знаходяться в Лондоні та Парижі  і множиною продуктів, які знаходяться в Парижі та Римselect і
-select 
-quantity from supplies where productid in (select productid from products where city ='London' or city ='Paris') -  sum(quantity) from supplies where 
-productid in (select productid from products where city ='Paris' or city ='Athens')
+4.
+select * from supplies inner join products on supplies.productid=products.productid where city ='London' or city ='Paris'
+intersect
+select * from supplies inner join products on supplies.productid=products.productid where city ='Paris' or city ='Rome'
 --5
 select supplierid, detailid, productid from supplies where 
 supplierid in (select supplierid from suppliers where city = 'london') 
