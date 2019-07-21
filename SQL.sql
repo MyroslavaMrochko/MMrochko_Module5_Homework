@@ -74,7 +74,7 @@ WHERE detailid = 1 AND quantity>
 select distinct detailid from supplies where productid in (select productid from products where city = 'London');
 --d.
 select supplierid, name from Suppliers where supplierid in (select supplierid from supplies where detailid in (select detailid from details where color = 'red'));
--e
+--e
 select productid from supplies where supplierid = 2 group by productid having count (detailid)>1
 -f
 select productid from supplies group by productid having avg(quantity) > (select Max(quantity) from supplies where productid=1)
