@@ -60,8 +60,16 @@ INSERT INTO Supplies (supplierid, detailid, Productid, quantity) VALUES
 -a
 select rs.productid from (select s.productid, s.detailid from supplies s 
 where s.supplierid=3 ) rs group by rs.detailid, rs.productid;
+                                                                     
+Отримати номери виробів, для яких всі деталі постачає постачальник 3   
+select productid from supplies where detailid=3 and                                                                      
 -b
 select supplierid from supplies where quantity > (select avg(quantity) from supplies where detailid=1)
+
+SELECT distinct suppliers.supplierid, name
+FROM suppliers JOIN supplies s_out on suppliers.supplierid = s_out.supplierid
+WHERE detailid = 1 AND quantity> 
+(SELECT AVG(s_in.quantity) FROM supplies s_in WHERE s_in.detailid=s_out.detailid AND s_in.detailid=1)
 --c.
 select distinct detailid from supplies where productid in (select productid from products where city = 'London');
 --d.
@@ -228,7 +236,15 @@ select supplierid from suppliers except select supplierid from supplies where de
 select * from supplies inner join products on supplies.productid=products.productid where city ='London' or city ='Paris'
 intersect
 select * from supplies inner join products on supplies.productid=products.productid where city ='Paris' or city ='Rome'
---5
+SELECT X.city FROM
+(SELECT ROW_NUMBER() OVER(PARTITION BY city ORDER BY (SELECT 0)) AS RN
+      ,city FROM suppliers
+INTERSECT
+SELECT ROW_NUMBER() OVER(PARTITION BY city ORDER BY (SELECT 0)) AS RN
+      ,city FROM details
+) AS X
+ORDER BY 1
+                                                --5
 select supplierid, detailid, productid from supplies where 
 supplierid in (select supplierid from suppliers where city = 'london') 
 or detailid in (select detailid from details where color='green') 
